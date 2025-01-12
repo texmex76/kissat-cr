@@ -1,6 +1,9 @@
-#include "propsearch.h"
+#include "archive.h"
 #include "fastassign.h"
+#include "options.h"
 #include "print.h"
+#include "propsearch.h"
+#include "stack.h"
 #include "trail.h"
 
 #define PROPAGATE_LITERAL search_propagate_literal
@@ -35,6 +38,17 @@ update_search_propagation_statistics (kissat *solver,
 static clause *search_propagate (kissat *solver) {
   clause *res = 0;
   unsigned *propagate = solver->propagate;
+  if (GET_OPTION (archive)) {
+    CLEAR_STACK (solver->archive_propagate);
+    while (!res && propagate != END_ARRAY (solver->trail)) {
+      uint lit = *propagate;
+      propagate++;
+      PUSH_STACK (solver->archive_propagate, lit);
+      res = search_propagate_literal (solver, lit);
+    }
+    solver->propagate = propagate;
+    return res;
+  }
   while (!res && propagate != END_ARRAY (solver->trail))
     res = search_propagate_literal (solver, *propagate++);
   solver->propagate = propagate;
@@ -52,6 +66,8 @@ clause *kissat_search_propagate (kissat *solver) {
   const unsigned *saved_propagate = solver->propagate;
   clause *conflict = search_propagate (solver);
   update_search_propagation_statistics (solver, saved_propagate);
+  if (!conflict)
+    (void) kissat_propagate_archive (solver);
   kissat_update_conflicts_and_trail (solver, conflict, true);
   if (conflict && solver->randec) {
     if (!--solver->randec)

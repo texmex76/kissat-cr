@@ -13,6 +13,7 @@
   METRIC (allocated_max, 2, PCNT_RESIDENT_SET, "%", "resident set") \
   STATISTIC (ands_eliminated, 1, PCNT_ELIMINATED, "%", "eliminated") \
   METRIC (ands_extracted, 1, PCNT_EXTRACTED, "%", "extracted") \
+  COUNTER (archive_conflicts, 0, NO_SECONDARY, 0, 0) \
   METRIC (arena_enlarged, 1, PCNT_ARENA_RESIZED, "%", "resize") \
   METRIC (arena_garbage, 1, PCNT_RESIDENT_SET, "%", "resident set") \
   METRIC (arena_resized, 1, CONF_INT, "", "interval") \
@@ -322,6 +323,8 @@ struct statistics
 
   struct {
     uint64_t glue[MAX_GLUE_USED + 1];
+    double mu;
+    double sigma_sqr;
   } used[2];
 };
 

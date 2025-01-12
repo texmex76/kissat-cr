@@ -8,6 +8,7 @@
 
 #define OPTIONS \
   OPTION (ands, 1, 0, 1, "extract and eliminate and gates") \
+  OPTION (archive, 1, 0, 1, "use archive") \
   OPTION (backbone, 1, 0, 2, "binary clause backbone (2=eager)") \
   OPTION (backboneeffort, 20, 0, 1e5, "effort in per mille") \
   OPTION (backbonemaxrounds, 1e3, 1, INT_MAX, "maximum backbone rounds") \
@@ -151,6 +152,7 @@
   OPTION (tier1relative, 500, 0, 1000, "relative tier one glue limit") \
   OPTION (tier2, 6, 1, 1e3, "learned clause tier two glue limit") \
   OPTION (tier2relative, 900, 0, 1000, "relative tier two glue limit") \
+  OPTION (tiermode, 2, 0, 2, "tier mode (0 fixed 1 percentile 2 estimation)") \
   OPTION (transitive, 1, 0, 1, "transitive reduction of binary clauses") \
   OPTION (transitiveeffort, 20, 0, 2e3, "effort in per mille") \
   OPTION (transitivekeep, 1, 0, 1, "keep transitivity candidates") \
@@ -219,6 +221,7 @@
 
 #define TIER1RELATIVE (GET_OPTION (tier1relative) / 1000.0)
 #define TIER2RELATIVE (GET_OPTION (tier2relative) / 1000.0)
+#define ALPHA 1e-5
 
 typedef struct opt opt;
 

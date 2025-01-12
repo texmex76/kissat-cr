@@ -1,4 +1,5 @@
 #include "allocate.h"
+#include "archive.h"
 #include "backtrack.h"
 #include "error.h"
 #include "import.h"
@@ -55,6 +56,13 @@ kissat *kissat_init (void) {
     solver->NAME = 0; \
   } while (0)
 
+#define DEALLOC_ARCHIVE_WATCHES(NAME, ELEMENTS_PER_BLOCK) \
+  do { \
+    const size_t block_size = ELEMENTS_PER_BLOCK * sizeof *solver->NAME; \
+    kissat_dealloc (solver, solver->NAME, solver->max_var, block_size); \
+    solver->NAME = 0; \
+  } while (0)
+
 #define DEALLOC_VARIABLE_INDEXED(NAME) DEALLOC_GENERIC (NAME, 1)
 
 #define DEALLOC_LITERAL_INDEXED(NAME) DEALLOC_GENERIC (NAME, 2)
@@ -75,6 +83,7 @@ void kissat_release (kissat *solver) {
   kissat_release_heap (solver, SCORES);
   kissat_release_heap (solver, &solver->schedule);
   kissat_release_vectors (solver);
+  kissat_release_archive_vectors (solver);
   kissat_release_phases (solver);
 
   RELEASE_STACK (solver->export);
@@ -87,6 +96,7 @@ void kissat_release (kissat *solver) {
   DEALLOC_LITERAL_INDEXED (marks);
   DEALLOC_LITERAL_INDEXED (values);
   DEALLOC_LITERAL_INDEXED (watches);
+  DEALLOC_ARCHIVE_WATCHES (archive_watches, 2);
 
   RELEASE_STACK (solver->import);
   RELEASE_STACK (solver->eliminated);
@@ -103,6 +113,8 @@ void kissat_release (kissat *solver) {
 #endif
 
   RELEASE_STACK (solver->arena);
+  RELEASE_STACK (solver->archive);
+  RELEASE_STACK (solver->archive_propagate);
 
   RELEASE_STACK (solver->units);
   RELEASE_STACK (solver->frames);

@@ -3,6 +3,7 @@
 
 #include "arena.h"
 #include "array.h"
+#include "archive.h"
 #include "assign.h"
 #include "averages.h"
 #include "check.h"
@@ -204,6 +205,13 @@ struct kissat {
   patches xorted[2];
   unsigneds resolvents;
   bool resolve_gate;
+
+  bool archive_unlocked;
+  arena archive;
+  unsigneds archive_propagate;
+  archive_watches *archive_watches;
+  int max_var;
+  archive_vectors archive_vectors;
 
   struct kitten *kitten;
 #ifdef METRICS

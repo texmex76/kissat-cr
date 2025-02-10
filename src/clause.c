@@ -1,4 +1,5 @@
 #include "allocate.h"
+#include "archive.h"
 #include "collect.h"
 #include "inline.h"
 
@@ -155,6 +156,7 @@ static void mark_clause_as_garbage (kissat *solver, clause *c) {
   REMOVE_CHECKER_CLAUSE (c);
   DELETE_CLAUSE_FROM_PROOF (c);
   assert (c->size > 2);
+  kissat_archive_clause (solver, c);
   dec_clause (solver, c->redundant, false);
   c->garbage = true;
 }

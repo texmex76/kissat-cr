@@ -1,5 +1,5 @@
-#include "search.h"
 #include "analyze.h"
+#include "archive.h"
 #include "bump.h"
 #include "classify.h"
 #include "decide.h"
@@ -18,6 +18,7 @@
 #include "rephase.h"
 #include "report.h"
 #include "restart.h"
+#include "search.h"
 #include "terminate.h"
 #include "trail.h"
 #include "walk.h"
@@ -189,6 +190,7 @@ int kissat_search (kissat *solver) {
     res = kissat_lucky (solver);
   if (!res)
     kissat_classify (solver);
+  kissat_archive_init (solver);
   if (!res && searching (solver)) {
     start_search (solver);
     while (!res) {

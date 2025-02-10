@@ -1,3 +1,4 @@
+#include "archive.h"
 #include "internal.h"
 #include "logging.h"
 #include "resize.h"
@@ -17,6 +18,7 @@ static void adjust_imports_for_external_literal (kissat *solver,
 static void adjust_exports_for_external_literal (kissat *solver,
                                                  unsigned eidx,
                                                  bool extension) {
+  kissat_resize_archive_watches (solver, solver->max_var, eidx);
   struct import *import = &PEEK_STACK (solver->import, eidx);
   unsigned iidx = solver->vars;
   kissat_enlarge_variables (solver, iidx + 1);

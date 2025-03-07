@@ -106,8 +106,8 @@ void kissat_init_limits (kissat *solver) {
   if (GET_OPTION (randec))
     INIT_CONFLICT_LIMIT (randec, false);
 
-  // if (GET_OPTION (reduce))
-  //   INIT_CONFLICT_LIMIT (reduce, false);
+  if (GET_OPTION (reduce))
+    INIT_CONFLICT_LIMIT (reduce, false);
 
   if (GET_OPTION (reorder))
     INIT_CONFLICT_LIMIT (reorder, false);

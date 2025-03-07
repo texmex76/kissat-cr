@@ -1,4 +1,5 @@
 #include "allocate.h"
+#include "backtrack.h"
 #include "collect.h"
 #include "inline.h"
 #include "print.h"
@@ -69,6 +70,8 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->garbage)
       continue;
     const unsigned used = c->used;
+    if (used)
+      c->used = used - 1;
     if (c->reason)
       continue;
     const unsigned glue = c->glue;
@@ -101,20 +104,8 @@ static void sort_reducibles (kissat *solver, reducibles *reds) {
 static void mark_less_useful_clauses_as_garbage (kissat *solver,
                                                  reducibles *reds) {
   statistics *statistics = &solver->statistics;
-#if 0
-  const double high = GET_OPTION (reducehigh) * 0.1;
-  const double low = GET_OPTION (reducelow) * 0.1;
-  double percent;
-  if (low < high) {
-    const double delta = high - low;
-    percent = high - delta / log10 (statistics->reductions + 9);
-  } else
-    percent = low;
-#else
-  double percent = 75;
-#endif
+  double percent = GET_OPTION (reducetarget);
   const double fraction = percent / 100.0;
-
   const size_t size = SIZE_STACK (*reds);
   size_t target = size * fraction;
 #ifndef QUIET
@@ -178,7 +169,7 @@ int kissat_reduce (kissat *solver) {
                   kissat_percent (words_to_sweep, arena_size));
 #endif
     if (solver->level)
-      kissat_restart (solver);
+      kissat_backtrack_propagate_and_flush_trail (solver);
     if (kissat_flush_and_mark_reason_clauses (solver, start)) {
       reducibles reds;
       INIT_STACK (reds);

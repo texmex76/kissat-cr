@@ -39,10 +39,10 @@
   COUNTER (clauses_original, 2, PCNT_CLS_ADDED, "%", "added") \
   STATISTIC (clauses_promoted1, 1, PCNT_CLS_IMPROVED, "%", "improved") \
   STATISTIC (clauses_promoted2, 1, PCNT_CLS_IMPROVED, "%", "improved") \
-  STATISTIC (clauses_reduced, 1, PCNT_CLS_LEARNED, "%", "learned") \
-  STATISTIC (clauses_reduced_tier1, 1, PCNT_CLS_REDUCED, "%", "reduced") \
-  STATISTIC (clauses_reduced_tier2, 1, PCNT_CLS_REDUCED, "%", "reduced") \
-  STATISTIC (clauses_reduced_tier3, 1, PCNT_CLS_REDUCED, "%", "reduced") \
+  COUNTER (clauses_reduced, 1, PCNT_CLS_LEARNED, "%", "learned") \
+  COUNTER (clauses_reduced_tier1, 1, PCNT_CLS_REDUCED, "%", "reduced") \
+  COUNTER (clauses_reduced_tier2, 1, PCNT_CLS_REDUCED, "%", "reduced") \
+  COUNTER (clauses_reduced_tier3, 1, PCNT_CLS_REDUCED, "%", "reduced") \
   COUNTER (clauses_redundant, 2, NO_SECONDARY, 0, 0) \
   STATISTIC (clauses_unfactored, 1, PCNT_CLS_FACTORED, "%", "factored") \
   COUNTER (clauses_used, 2, PCNT_CLS_LEARNED, "%", "learned") \
@@ -181,7 +181,7 @@
   STATISTIC (restarts_levels, 1, PER_RESTART, 0, "per restart") \
   STATISTIC (restarts_reused_levels, 1, PCNT_RESTARTS_LEVELS, "%", "levels") \
   STATISTIC (restarts_reused_trails, 1, PCNT_RESTARTS, "%", "restarts") \
-  COUNTER (retiered, 2, CONF_INT, "", "interval") \
+  COUNTER (retiered, 1, CONF_INT, "", "interval") \
   METRIC (saved_decisions, 1, PCNT_DECISIONS, "%", "decisions") \
   METRIC (score_decisions, 0, PCNT_DECISIONS, "%", "decision") \
   COUNTER (searches, 2, CONF_INT, "", "interval") \
@@ -250,7 +250,7 @@
   STATISTIC (vivified_instantiated, 1, PCNT_VIVIFIED, "%", "vivified") \
   STATISTIC (vivified_instirr, 1, PCNT_VIVIFY_INST, "%", "instantiated") \
   STATISTIC (vivified_instred, 1, PCNT_VIVIFY_INST, "%", "instantiated") \
-  STATISTIC (vivified_irredundant, 1, PCNT_VIVIFIED, "%", "vivified") \
+  COUNTER (vivified_irredundant, 1, PCNT_VIVIFIED, "%", "vivified") \
   STATISTIC (vivified_promoted, 1, PCNT_VIVIFIED, "%", "vivified") \
   STATISTIC (vivified_shrunken, 1, PCNT_VIVIFIED, "%", "vivified") \
   STATISTIC (vivified_shrunkirr, 1, PCNT_VIVIFY_SHRUNKEN, "%", "shrunken") \
@@ -258,10 +258,10 @@
   STATISTIC (vivified_subirr, 1, PCNT_VIVIFY_SUB, "%", "subsumed") \
   STATISTIC (vivified_subred, 1, PCNT_VIVIFY_SUB, "%", "subsumed") \
   STATISTIC (vivified_subsumed, 1, PCNT_VIVIFIED, "%", "vivified") \
-  STATISTIC (vivified_tier1, 1, PCNT_VIVIFIED, "%", "vivified") \
-  STATISTIC (vivified_tier2, 1, PCNT_VIVIFIED, "%", "vivified") \
-  STATISTIC (vivified_tier3, 1, PCNT_VIVIFIED, "%", "vivified") \
-  STATISTIC (vivified_unlearn, 1, PCNT_VIVIFIED, "%", "vivified") \
+  COUNTER (vivified_tier1, 1, PCNT_VIVIFIED, "%", "vivified") \
+  COUNTER (vivified_tier2, 1, PCNT_VIVIFIED, "%", "vivified") \
+  COUNTER (vivified_tier3, 1, PCNT_VIVIFIED, "%", "vivified") \
+  COUNTER (vivified_unlearn, 1, PCNT_VIVIFIED, "%", "vivified") \
   COUNTER (vivify_checks, 2, PER_VIVIFICATION, "", "per vivify") \
   COUNTER (vivify_probes, 2, PER_VIVIFY_CHECK, 0, "per check") \
   STATISTIC (vivify_propagations, 2, PCNT_PROPS, "%", "propagations") \

@@ -79,6 +79,10 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
       continue;
     if (glue <= tier2 && used >= MAX_USED - 1)
       continue;
+    if (used == MAX_USED) {
+      assert (glue > tier2);
+      continue;
+    }
     assert (kissat_clause_in_arena (solver, c));
     reducible red;
     const uint64_t negative_size = ~c->size;

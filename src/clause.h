@@ -14,7 +14,7 @@ typedef struct clause clause;
 #define LD_MAX_USED 5
 
 #define MAX_GLUE ((1u << LD_MAX_GLUE) - 1)
-#define MAX_USED ((1u << LD_MAX_USED) - 1)
+#define MAX_USED 2
 
 struct clause {
   unsigned glue : LD_MAX_GLUE;

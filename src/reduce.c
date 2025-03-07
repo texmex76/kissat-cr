@@ -1,10 +1,11 @@
-#include "reduce.h"
 #include "allocate.h"
 #include "collect.h"
 #include "inline.h"
 #include "print.h"
 #include "rank.h"
+#include "reduce.h"
 #include "report.h"
+#include "restart.h"
 #include "tiers.h"
 #include "trail.h"
 
@@ -68,8 +69,6 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->garbage)
       continue;
     const unsigned used = c->used;
-    if (used)
-      c->used = used - 1;
     if (c->reason)
       continue;
     const unsigned glue = c->glue;
@@ -173,6 +172,8 @@ int kissat_reduce (kissat *solver) {
                   FORMAT_BYTES (bytes_to_sweep),
                   kissat_percent (words_to_sweep, arena_size));
 #endif
+    if (solver->level)
+      kissat_restart (solver);
     if (kissat_flush_and_mark_reason_clauses (solver, start)) {
       reducibles reds;
       INIT_STACK (reds);

@@ -108,7 +108,7 @@
   OPTION (reduce, 1, 0, 1, "learned clause reduction") \
   OPTION (reduceinit, 1e3, 2, 1e5, "initial reduce interval") \
   OPTION (reduceint, 1e3, 2, 1e5, "base reduce interval") \
-  OPTION (reducetarget, 75, 0, 100, "reduce fraction per cent") \
+  OPTION (reducetarget, 0, 0, 100, "reduce fraction per cent") \
   OPTION (reluctant, 1, 0, 1, "stable reluctant doubling restarting") \
   OPTION (reluctantint, 1 << 10, 2, 1 << 15, "reluctant interval") \
   OPTION (reluctantlim, 1 << 20, 0, 1 << 30, "reluctant limit (0=unlimited)") \

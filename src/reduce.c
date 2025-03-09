@@ -81,7 +81,7 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->reason)
       continue;
     const unsigned glue = c->glue;
-    if (glue <= 3)
+    if (glue <= 5)
       continue;
 #if 0
     if (glue <= tier1 && used)

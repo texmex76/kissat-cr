@@ -118,8 +118,18 @@ static reference learn_reference (kissat *solver, unsigned not_uip,
 void kissat_update_learned (kissat *solver, unsigned glue, unsigned size) {
   assert (!solver->probing);
   INC (clauses_learned);
+  if (size == 2)
+    INC (clauses_learned_binary);
   LOG ("learned[%" PRIu64 "] clause glue %u size %u", GET (clauses_learned),
        glue, size);
+  const unsigned tier1 = TIER1;
+  const unsigned tier2 = TIER2;
+  if (glue <= tier1)
+    INC (clauses_learned_tier1);
+  else if (glue <= tier2)
+    INC (clauses_learned_tier2);
+  else
+    INC (clauses_learned_tier3);
   if (solver->stable)
     kissat_tick_reluctant (&solver->reluctant);
   ADD (literals_learned, size);

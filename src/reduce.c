@@ -93,12 +93,12 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
 #endif
     assert (kissat_clause_in_arena (solver, c));
     reducible red;
-    const uint64_t negative_size = ~c->size;
-#if 0
     const uint64_t negative_glue = ~c->glue;
+#if 0
+    const uint64_t negative_size = ~c->size;
     red.rank = negative_size | (negative_glue << 32);
 #else
-    red.rank = negative_size;
+    red.rank = negative_glue;
 #endif
     red.ref = (ward *) c - arena;
     PUSH_STACK (*reds, red);

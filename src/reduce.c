@@ -61,9 +61,11 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
          (size_t) solver->first_reducible);
 #endif
   solver->first_reducible = redundant;
+#if 0
   const unsigned tier1 = TIER1;
   const unsigned tier2 = MAX (tier1, TIER2);
   assert (tier1 <= tier2);
+#endif
   for (clause *c = start; c != end; c = kissat_next_clause (c)) {
     if (!c->redundant)
       continue;
@@ -71,9 +73,14 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
       continue;
     const unsigned used = c->used;
     if (used)
+#if 0
       c->used = used - 1;
+#else
+      c->used = 0;
+#endif
     if (c->reason)
       continue;
+#if 0
     const unsigned glue = c->glue;
     if (glue <= tier1 && used)
       continue;
@@ -83,11 +90,16 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
       assert (glue > tier2);
       continue;
     }
+#endif
     assert (kissat_clause_in_arena (solver, c));
     reducible red;
     const uint64_t negative_size = ~c->size;
+#if 0
     const uint64_t negative_glue = ~c->glue;
     red.rank = negative_size | (negative_glue << 32);
+#else
+    red.rank = negative_size;
+#endif
     red.ref = (ward *) c - arena;
     PUSH_STACK (*reds, red);
   }

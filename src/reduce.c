@@ -20,6 +20,8 @@ bool kissat_reducing (kissat *solver) {
     return false;
   if (CONFLICTS < solver->limits.reduce.conflicts)
     return false;
+  if (solver->level <= AVERAGE(level))
+    return false;
   return true;
 }
 
@@ -172,8 +174,10 @@ int kissat_reduce (kissat *solver) {
                   FORMAT_BYTES (bytes_to_sweep),
                   kissat_percent (words_to_sweep, arena_size));
 #endif
+#if 0
     if (solver->level)
       kissat_backtrack_propagate_and_flush_trail (solver);
+#endif
     if (kissat_flush_and_mark_reason_clauses (solver, start)) {
       reducibles reds;
       INIT_STACK (reds);

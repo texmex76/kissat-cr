@@ -20,7 +20,7 @@ bool kissat_reducing (kissat *solver) {
     return false;
   if (CONFLICTS < solver->limits.reduce.conflicts)
     return false;
-  if (solver->level <= AVERAGE(level))
+  if (solver->stable && solver->level <= 1.1 * AVERAGE (level))
     return false;
   return true;
 }

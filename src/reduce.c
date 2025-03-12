@@ -61,8 +61,8 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
          (size_t) solver->first_reducible);
 #endif
   solver->first_reducible = redundant;
-#if 0
   const unsigned tier1 = TIER1;
+#if 0
   const unsigned tier2 = MAX (tier1, TIER2);
   assert (tier1 <= tier2);
 #endif
@@ -81,7 +81,7 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->reason)
       continue;
     const unsigned glue = c->glue;
-    if (glue <= 3)
+    if (glue <= tier1)
       continue;
 #if 0
     if (glue <= tier1 && used)

@@ -1,40 +1,133 @@
-#include "tiers.h"
 #include "internal.h"
 #include "logging.h"
+#include "math.h"
 #include "print.h"
+#include "tiers.h"
+
+static double inverse_normal_cdf_lookup[] = {
+    0.0,
+    -2.3263478740408408,
+    -2.0537489106318230,
+    -1.8807936081512511,
+    -1.7506860712521699,
+    -1.6448536269514729,
+    -1.5547735945968535,
+    -1.4757910281791711,
+    -1.4050715603096329,
+    -1.3407550336902165,
+    -1.2815515655446004,
+    -1.2265281200366098,
+    -1.1749867920660904,
+    -1.1263911290388007,
+    -1.0803193408149558,
+    -1.0364333894937898,
+    -0.9944578832097530,
+    -0.9541652531461943,
+    -0.9153650878428138,
+    -0.8778962950512288,
+    -0.8416212335729142,
+    -0.8064212470182403,
+    -0.7721932141886848,
+    -0.7388468491852137,
+    -0.7063025628400874,
+    -0.6744897501960817,
+    -0.6433454053929170,
+    -0.6128129910166272,
+    -0.5828415072712162,
+    -0.5533847195556727,
+    -0.5244005127080409,
+    -0.4958503473474533,
+    -0.4676987991145082,
+    -0.4399131656732338,
+    -0.4124631294414047,
+    -0.3853204664075676,
+    -0.3584587932511936,
+    -0.3318533464368166,
+    -0.3054807880993974,
+    -0.2793190344474542,
+    -0.2533471031357997,
+    -0.2275449766411493,
+    -0.2018934791418507,
+    -0.1763741647808613,
+    -0.1509692154967772,
+    -0.1256613468550740,
+    -0.1004337205114697,
+    -0.0752698620998298,
+    -0.0501535834647335,
+    -0.0250689082587111,
+    0.0000000000000000,
+    0.0250689082587111,
+    0.0501535834647337,
+    0.0752698620998299,
+    0.1004337205114699,
+    0.1256613468550742,
+    0.1509692154967774,
+    0.1763741647808615,
+    0.2018934791418511,
+    0.2275449766411493,
+    0.2533471031357997,
+    0.2793190344474542,
+    0.3054807880993974,
+    0.3318533464368166,
+    0.3584587932511938,
+    0.3853204664075677,
+    0.4124631294414050,
+    0.4399131656732339,
+    0.4676987991145084,
+    0.4958503473474535,
+    0.5244005127080410,
+    0.5533847195556731,
+    0.5828415072712162,
+    0.6128129910166272,
+    0.6433454053929170,
+    0.6744897501960817,
+    0.7063025628400874,
+    0.7388468491852137,
+    0.7721932141886848,
+    0.8064212470182404,
+    0.8416212335729143,
+    0.8778962950512289,
+    0.9153650878428143,
+    0.9541652531461948,
+    0.9944578832097535,
+    1.0364333894937898,
+    1.0803193408149558,
+    1.1263911290388007,
+    1.1749867920660904,
+    1.2265281200366105,
+    1.2815515655446004,
+    1.3407550336902165,
+    1.4050715603096329,
+    1.4757910281791711,
+    1.5547735945968539,
+    1.6448536269514733,
+    1.7506860712521708,
+    1.8807936081512509,
+    2.0537489106318225,
+    2.3263478740408408,
+};
 
 static void compute_tier_limits (kissat *solver, bool stable,
                                  unsigned *tier1_ptr, unsigned *tier2_ptr) {
   statistics *statistics = &solver->statistics;
-  uint64_t *used_stats = statistics->used[stable].glue;
-  uint64_t total_used = 0;
-  for (unsigned glue = 0; glue <= MAX_GLUE_USED; glue++)
-    total_used += used_stats[glue];
   int tier1 = -1, tier2 = -1;
-  if (total_used) {
-    uint64_t accumulated_tier1_limit = total_used * TIER1RELATIVE;
-    uint64_t accumulated_tier2_limit = total_used * TIER2RELATIVE;
-    uint64_t accumulated_used = 0;
-    unsigned glue;
-    for (glue = 0; glue <= MAX_GLUE_USED; glue++) {
-      uint64_t glue_used = used_stats[glue];
-      accumulated_used += glue_used;
-      if (accumulated_used >= accumulated_tier1_limit) {
-        tier1 = glue;
-        break;
-      }
-    }
-    if (accumulated_used < accumulated_tier2_limit) {
-      for (glue = tier1 + 1; glue <= MAX_GLUE_USED; glue++) {
-        uint64_t glue_used = used_stats[glue];
-        accumulated_used += glue_used;
-        if (accumulated_used >= accumulated_tier2_limit) {
-          tier2 = glue;
-          break;
-        }
-      }
-    }
-  }
+  double mu = statistics->used[stable].mu;
+  double sigma_sqr = statistics->used[stable].sigma_sqr;
+  double used = stable ? (double) statistics->clauses_used_stable
+                       : statistics->clauses_used_focused;
+  double mu_ = mu / (1 - pow (1 - ALPHA, used));
+  double sigma_sqr_ = sigma_sqr / (1 - pow (1 - ALPHA, used));
+  // HACK: 0.00003 turned out to give reasonable tier2 values
+  // for early iterations
+  double mu__ = mu / (1 - pow (1 - 0.00003, used));
+  double sigma_sqr__ = sigma_sqr / (1 - pow (1 - 0.00003, used));
+  tier1 = (int) nearbyint (exp (
+      mu_ + sqrt (sigma_sqr_) * inverse_normal_cdf_lookup[(int) nearbyint (
+                                    TIER1RELATIVE * 100)]));
+  tier2 = (int) nearbyint (
+      exp (mu__ +
+           sqrt (sigma_sqr__) * inverse_normal_cdf_lookup[(int) nearbyint (
+                                    TIER2RELATIVE * 100)]));
   if (tier1 < 0) {
     tier1 = GET_OPTION (tier1);
     tier2 = MAX (GET_OPTION (tier2), tier1);

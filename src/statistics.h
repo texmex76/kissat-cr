@@ -326,6 +326,8 @@ struct statistics
 
   struct {
     uint64_t glue[MAX_GLUE_USED + 1];
+    double mu;
+    double sigma_sqr;
   } used[2];
 };
 

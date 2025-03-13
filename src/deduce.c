@@ -1,5 +1,6 @@
 #include "deduce.h"
 #include "inline.h"
+#include "math.h"
 #include "promote.h"
 #include "strengthen.h"
 
@@ -19,8 +20,16 @@ static inline void mark_clause_as_used (kissat *solver, clause *c) {
   LOGCLS (c, "using");
   recompute_and_promote (solver, c);
   unsigned glue = MIN (c->glue, MAX_GLUE_USED);
-  solver->statistics.used[solver->stable].glue[glue]++;
-  if (solver->stable)
+  bool stable = solver->stable;
+  double mu = solver->statistics.used[stable].mu;
+  double sigma_sqr = solver->statistics.used[stable].sigma_sqr;
+  double log_g = log ((double) glue);
+  mu = mu + ALPHA * (log_g - mu);
+  sigma_sqr =
+      (1 - ALPHA) * (sigma_sqr + (log_g - mu) * ALPHA * (log_g - mu));
+  solver->statistics.used[stable].mu = mu;
+  solver->statistics.used[stable].sigma_sqr = sigma_sqr;
+  if (stable)
     INC (clauses_used_stable);
   else
     INC (clauses_used_focused);

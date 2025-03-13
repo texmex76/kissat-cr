@@ -218,6 +218,7 @@
 
 #define TIER1RELATIVE (GET_OPTION (tier1relative) / 1000.0)
 #define TIER2RELATIVE (GET_OPTION (tier2relative) / 1000.0)
+#define ALPHA 1e-5
 
 typedef struct opt opt;
 

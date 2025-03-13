@@ -81,7 +81,7 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->reason)
       continue;
     const unsigned size = c->size;
-    if (size <= 15)
+    if (size <= 21)
       continue;
 #if 0
     const unsigned glue = c->glue;

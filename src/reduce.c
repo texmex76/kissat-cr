@@ -1,10 +1,10 @@
+#include "reduce.h"
 #include "allocate.h"
 #include "backtrack.h"
 #include "collect.h"
 #include "inline.h"
 #include "print.h"
 #include "rank.h"
-#include "reduce.h"
 #include "report.h"
 #include "restart.h"
 #include "tiers.h"
@@ -80,10 +80,11 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
 #endif
     if (c->reason)
       continue;
-    const unsigned glue = c->glue;
-    if (glue <= 1)
+    const unsigned size = c->size;
+    if (size <= 3)
       continue;
 #if 0
+    const unsigned glue = c->glue;
     if (glue <= tier1 && used)
       continue;
     if (glue <= tier2 && used >= MAX_USED - 1)

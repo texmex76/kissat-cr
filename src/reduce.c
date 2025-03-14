@@ -72,19 +72,20 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->garbage)
       continue;
     const unsigned used = c->used;
-    if (used)
+    if (used) {
 #if 0
       c->used = used - 1;
 #else
       c->used = 0;
+      continue;
 #endif
+    }
     if (c->reason)
       continue;
-    const unsigned size = c->size;
-    if (size <= 21)
+    const unsigned glue = c->glue;
+    if (glue <= 3)
       continue;
 #if 0
-    const unsigned glue = c->glue;
     if (glue <= tier1 && used)
       continue;
     if (glue <= tier2 && used >= MAX_USED - 1)

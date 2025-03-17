@@ -72,13 +72,16 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->garbage)
       continue;
     const unsigned used = c->used;
-    if (used) {
+    if (used > 1) {
 #if 0
       c->used = used - 1;
 #else
-      c->used = 0;
+      c->used = 1;
       continue;
 #endif
+    } else if (used) {
+      c->used = 0;
+      continue;
     }
     if (c->reason)
       continue;

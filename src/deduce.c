@@ -18,7 +18,7 @@ static inline void mark_clause_as_used (kissat *solver, clause *c) {
   c->used = MAX_USED;
   LOGCLS (c, "using");
   recompute_and_promote (solver, c);
-  unsigned glue = MIN (c->size, MAX_GLUE_USED);
+  unsigned glue = MIN (c->glue, MAX_GLUE_USED);
   solver->statistics.used[solver->stable].glue[glue]++;
   if (solver->stable)
     INC (clauses_used_stable);

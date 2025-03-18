@@ -46,6 +46,7 @@ kissat *kissat_init (void) {
   kissat_init_checker (solver);
 #endif
   solver->prefix = kissat_strdup (solver, "c ");
+  solver->activity = 1.0;
   return solver;
 }
 

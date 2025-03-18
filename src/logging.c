@@ -325,7 +325,7 @@ static void log_clause (kissat *solver, const clause *c) {
     fputs (" binary conflict clause", stdout);
   } else {
     if (c->redundant)
-      printf ("redundant glue %u", c->glue);
+      printf ("redundant glue %u activity %g", c->glue, c->activity);
     else
       fputs ("irredundant", stdout);
     printf (" size %u", c->size);

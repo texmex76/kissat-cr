@@ -186,6 +186,7 @@
   STATISTIC (restarts_reused_levels, 1, PCNT_RESTARTS_LEVELS, "%", "levels") \
   STATISTIC (restarts_reused_trails, 1, PCNT_RESTARTS, "%", "restarts") \
   COUNTER (retiered, 1, CONF_INT, "", "interval") \
+  COUNTER (rescored_activity, 1, CONF_INT, "", "interval") \
   METRIC (saved_decisions, 1, PCNT_DECISIONS, "%", "decisions") \
   METRIC (score_decisions, 0, PCNT_DECISIONS, "%", "decision") \
   COUNTER (searches, 2, CONF_INT, "", "interval") \

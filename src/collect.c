@@ -337,8 +337,7 @@ static reference sparse_sweep_garbage_clauses (kissat *solver, bool compact,
 #if !defined(NDEBUG) || defined(CHECKING_OR_PROVING)
     const unsigned old_size = src->size;
 #endif
-    assert (SIZE_OF_CLAUSE_HEADER == sizeof (unsigned));
-    *(unsigned *) dst = *(unsigned *) src;
+    memcpy (dst, src, SIZE_OF_CLAUSE_HEADER);
 
     unsigned *q = dst->lits;
 
@@ -683,8 +682,7 @@ static void dense_sweep_garbage_clauses (kissat *solver) {
     assert (src->size > 1);
     LOGCLS (src, "SRC");
     next = kissat_next_clause (src);
-    assert (SIZE_OF_CLAUSE_HEADER == sizeof (unsigned));
-    *(unsigned *) dst = *(unsigned *) src;
+    memcpy (dst, src, SIZE_OF_CLAUSE_HEADER);
     dst->searched = src->searched;
     dst->size = src->size;
     dst->shrunken = false;

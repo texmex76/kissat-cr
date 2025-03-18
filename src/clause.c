@@ -45,6 +45,8 @@ static void init_clause (clause *res, bool redundant, unsigned glue,
 
   res->used = 0;
 
+  res->activity = 0;
+
   res->searched = 2;
   res->size = size;
 }

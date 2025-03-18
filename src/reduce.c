@@ -1,10 +1,10 @@
+#include "reduce.h"
 #include "allocate.h"
 #include "backtrack.h"
 #include "collect.h"
 #include "inline.h"
 #include "print.h"
 #include "rank.h"
-#include "reduce.h"
 #include "report.h"
 #include "restart.h"
 #include "tiers.h"
@@ -26,7 +26,10 @@ bool kissat_reducing (kissat *solver) {
 typedef struct reducible reducible;
 
 struct reducible {
-  uint64_t rank;
+  union {
+    uint64_t rank;
+    double activity;
+  };
   unsigned ref;
 };
 
@@ -61,9 +64,6 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
          (size_t) solver->first_reducible);
 #endif
   solver->first_reducible = redundant;
-  const unsigned tier1 = TIER1;
-  const unsigned tier2 = MAX (tier1, TIER2);
-  assert (tier1 <= tier2);
   for (clause *c = start; c != end; c = kissat_next_clause (c)) {
     if (!c->redundant)
       continue;
@@ -72,22 +72,9 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     const unsigned used = c->used;
     if (used)
       c->used = used - 1;
-    if (c->reason)
-      continue;
-    const unsigned glue = c->glue;
-    if (glue <= tier1 && used)
-      continue;
-    if (glue <= tier2 && used >= MAX_USED - 1)
-      continue;
-    if (used == MAX_USED) {
-      assert (glue > tier2);
-      continue;
-    }
     assert (kissat_clause_in_arena (solver, c));
     reducible red;
-    const uint64_t negative_size = ~c->size;
-    const uint64_t negative_glue = ~c->glue;
-    red.rank = negative_size | (negative_glue << 32);
+    red.activity = c->activity;
     red.ref = (ward *) c - arena;
     PUSH_STACK (*reds, red);
   }

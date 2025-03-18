@@ -11,12 +11,40 @@ static inline void recompute_and_promote (kissat *solver, clause *c) {
     kissat_promote_clause (solver, c, new_glue);
 }
 
+#define MAX_ACTIVITY 1e37
+
+#include "report.h"
+
+static void rescore_activity (kissat *solver) {
+  LOG ("rescoring clause activity");
+  INC (rescored_activity);
+  float max_activity = 1;
+  for (all_clauses (c))
+    if (c->redundant && !c->garbage && c->activity > max_activity)
+      max_activity = c->activity;
+  for (all_clauses (c))
+    if (c->redundant && !c->garbage)
+      c->activity /= max_activity;
+  solver->activity /= max_activity;
+  REPORT (1, 'a');
+}
+
+static inline void bump_activity (kissat *solver, clause *c) {
+  float new_activity = c->activity + solver->activity;
+  LOGCLS (c, "increasing activity from %g to %g of", c->activity,
+          new_activity);
+  c->activity = new_activity;
+  if (new_activity > MAX_ACTIVITY)
+    rescore_activity (solver);
+}
+
 static inline void mark_clause_as_used (kissat *solver, clause *c) {
   if (!c->redundant)
     return;
   INC (clauses_used);
   c->used = MAX_USED;
   LOGCLS (c, "using");
+  bump_activity (solver, c);
   recompute_and_promote (solver, c);
   unsigned glue = MIN (c->glue, MAX_GLUE_USED);
   solver->statistics.used[solver->stable].glue[glue]++;
@@ -127,6 +155,7 @@ clause *kissat_deduce_first_uip_clause (kissat *solver, clause *conflict) {
           unresolved_on_current_level++;
       mark_clause_as_used (solver, reason);
     }
+    solver->activity *= 1.001;
     assert (unresolved_on_current_level > 0);
     unresolved_on_current_level--;
     LOG ("after resolving %s there are %u literals left "

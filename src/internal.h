@@ -196,6 +196,7 @@ struct kissat {
   mode mode;
 
   uint64_t ticks;
+  double activity;
 
   format format;
   char *prefix;

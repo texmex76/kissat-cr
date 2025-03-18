@@ -72,7 +72,9 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->garbage)
       continue;
     const unsigned used = c->used;
-    if (used > 1) {
+    const unsigned glue = c->glue;
+    const unsigned tier1 = solver->tier1[solver->stable];
+    if (used > 1 && glue <= tier1) {
 #if 0
       c->used = used - 1;
 #else
@@ -85,7 +87,6 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     }
     if (c->reason)
       continue;
-    const unsigned glue = c->glue;
     if (glue <= 3)
       continue;
 #if 0

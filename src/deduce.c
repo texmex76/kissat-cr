@@ -38,6 +38,10 @@ static inline void bump_activity (kissat *solver, clause *c) {
     rescore_activity (solver);
 }
 
+void kissat_bump_activity (struct kissat * solver, struct clause* c) {
+  bump_activity (solver, c);
+}
+
 static inline void mark_clause_as_used (kissat *solver, clause *c) {
   if (!c->redundant)
     return;

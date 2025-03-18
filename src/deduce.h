@@ -10,5 +10,6 @@ struct clause *kissat_deduce_first_uip_clause (struct kissat *,
                                                struct clause *);
 
 bool kissat_recompute_and_promote (struct kissat *, struct clause *);
+void kissat_bump_activity (struct kissat *, struct clause*);
 
 #endif

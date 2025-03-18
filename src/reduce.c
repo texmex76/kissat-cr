@@ -74,7 +74,7 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     const unsigned used = c->used;
     const unsigned tier1 = solver->tier1[solver->stable];
     const unsigned size = c->size;
-    if (used > 1 && tier1 <= size) {
+    if (used > 1 && size <= tier1) {
 #if 0
       c->used = used - 1;
 #else

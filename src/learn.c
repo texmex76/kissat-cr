@@ -1,5 +1,6 @@
 #include "learn.h"
 #include "backtrack.h"
+#include "deduce.h"
 #include "inline.h"
 #include "reluctant.h"
 
@@ -108,6 +109,7 @@ static reference learn_reference (kissat *solver, unsigned not_uip,
   assert (ref != INVALID_REF);
   clause *c = kissat_dereference_clause (solver, ref);
   c->used = MAX_USED;
+  kissat_bump_activity (solver, c);
   const unsigned new_level =
       kissat_determine_new_level (solver, jump_level);
   kissat_backtrack_after_conflict (solver, new_level);

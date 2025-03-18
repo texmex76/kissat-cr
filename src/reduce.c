@@ -72,7 +72,9 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->garbage)
       continue;
     const unsigned used = c->used;
-    if (used > 1) {
+    const unsigned tier1 = solver->tier1[solver->stable];
+    const unsigned size = c->size;
+    if (used > 1 && tier1 <= size) {
 #if 0
       c->used = used - 1;
 #else
@@ -85,7 +87,6 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     }
     if (c->reason)
       continue;
-    const unsigned size = c->size;
     if (size <= 10)
       continue;
 #if 0
@@ -102,8 +103,12 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     assert (kissat_clause_in_arena (solver, c));
     reducible red;
     const uint64_t negative_size = ~c->size;
+#if 0
     const uint64_t negative_glue = ~c->glue;
     red.rank = negative_size | (negative_glue << 32);
+#else
+    red.rank = negative_size;
+#endif
     red.ref = (ward *) c - arena;
     PUSH_STACK (*reds, red);
   }

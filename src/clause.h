@@ -29,10 +29,10 @@ struct clause {
   bool vivify : 1;
 
   unsigned used : LD_MAX_USED;
-  float activity;
+  unsigned size;
+  double activity;
 
   unsigned searched;
-  unsigned size;
 
   unsigned lits[3];
 };

@@ -36,7 +36,7 @@ static void test_arena_realloc (void) {
   printf ("before allocating arena %s\n", formatted);
 #endif
   const unsigned bytes = (1u << 22);
-  const unsigned size = bytes / 4 - 15;
+  const unsigned size = bytes / 4 - 7;
   const unsigned n = tissat_big ? (1u << 8) : (1u << 3);
   for (unsigned i = 0; i < n; i++) {
     reference ref = kissat_allocate_clause (solver, size);

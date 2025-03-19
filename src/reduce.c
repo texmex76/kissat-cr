@@ -70,8 +70,14 @@ static bool collect_reducibles (kissat *solver, reducibles *reds,
     if (c->garbage)
       continue;
     const unsigned used = c->used;
-    if (used)
+    if (used) {
+#if 0
       c->used = used - 1;
+#else
+      c->used = 0;
+      continue;
+#endif
+    }
     assert (kissat_clause_in_arena (solver, c));
     reducible red;
     red.activity = c->activity;

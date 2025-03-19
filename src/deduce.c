@@ -11,14 +11,14 @@ static inline void recompute_and_promote (kissat *solver, clause *c) {
     kissat_promote_clause (solver, c, new_glue);
 }
 
-#define MAX_ACTIVITY 1e300
+#define MAX_ACTIVITY 1e20
 
 #include "report.h"
 
 static void rescore_activity (kissat *solver) {
   LOG ("rescoring clause activity");
   INC (rescored_activity);
-  double max_activity = 1;
+  float max_activity = 1;
   for (all_clauses (c))
     if (c->redundant && !c->garbage && c->activity > max_activity)
       max_activity = c->activity;
@@ -30,7 +30,7 @@ static void rescore_activity (kissat *solver) {
 }
 
 static inline void bump_activity (kissat *solver, clause *c) {
-  double new_activity = c->activity + solver->activity;
+  float new_activity = c->activity + solver->activity;
   LOGCLS (c, "increasing activity from %g to %g of", c->activity,
           new_activity);
   c->activity = new_activity;

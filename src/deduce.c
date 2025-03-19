@@ -11,7 +11,7 @@ static inline void recompute_and_promote (kissat *solver, clause *c) {
     kissat_promote_clause (solver, c, new_glue);
 }
 
-#define MAX_ACTIVITY 1e20
+#define MAX_ACTIVITY 1e37
 
 #include "report.h"
 

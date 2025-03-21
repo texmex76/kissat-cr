@@ -1,7 +1,7 @@
-#include "tiers.h"
 #include "internal.h"
 #include "logging.h"
 #include "print.h"
+#include "tiers.h"
 
 static void compute_tier_limits (kissat *solver, bool stable,
                                  unsigned *tier1_ptr, unsigned *tier2_ptr) {
@@ -158,4 +158,9 @@ void kissat_print_tier_usage_statistics (kissat *solver, bool stable) {
     if (glue == tier2)
       break;
   }
+  printf ("c %s glue array ", mode);
+  for (unsigned glue = 1; glue < MAX_GLUE_USED + 1; glue++) {
+    printf ("%lu ", used_stats[glue]);
+  }
+  fputs ("\n", stdout);
 }
